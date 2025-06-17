@@ -10,7 +10,7 @@ import (
 
 type MovieHanlder struct {
 	// Todo: Add logger
-	DB sql.DB
+	DB *sql.DB
 }
 
 func (h *MovieHanlder) writeJson(w http.ResponseWriter, data interface{}) {
