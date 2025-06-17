@@ -28,6 +28,7 @@ func main() {
 
     // Start server
     const addr = ":8080"
+
     if err := http.ListenAndServe(addr, nil); err != nil {
         log.Fatalf("Server failed: %v", err)
     }
@@ -37,7 +38,7 @@ func main() {
 Create a test *index.html*.
 
 ### A2 - Logger
-
+ 
 Create a logger package with a *logger.go* file
 
 ```go
