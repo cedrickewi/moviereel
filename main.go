@@ -10,6 +10,7 @@ import (
 	"github.com/cedrickewi/moviereel/handlers"
 	"github.com/cedrickewi/moviereel/logger"
 	"github.com/joho/godotenv"
+	_ "github.com/lib/pq" //import postges driver for database connection 
 )
 
 func initializeLogger() logger.Logger {
