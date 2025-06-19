@@ -7,21 +7,23 @@ import (
 	"net/http"
 	"os"
 
+	logger "github.com/cedrickewi/moviereel/Logger"
+	"github.com/cedrickewi/moviereel/data"
 	"github.com/cedrickewi/moviereel/handlers"
-	"github.com/cedrickewi/moviereel/logger"
 	"github.com/joho/godotenv"
-	_ "github.com/lib/pq" //import postges driver for database connection 
+	_ "github.com/lib/pq" //import postges driver for database connection
 )
 
-func initializeLogger() logger.Logger {
+func initializeLogger() *logger.Logger {
 	logint, err := logger.NewLogger("movie.log")
+	logint.Error("test error logging", nil)
 	if err != nil {
 		log.Fatalf("Failed to initialize %v", err)
 	}
 
 	defer logint.Close()
 
-	return *logint
+	return logint
 }
 
 func main() {
@@ -30,6 +32,9 @@ func main() {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
+
+	// create logger
+	logInstance := initializeLogger()
 
 	//Connect to database
 	dbConnStr := os.Getenv("DB_CONNECTION_STRING")
@@ -42,16 +47,23 @@ func main() {
 	}
 	defer db.Close()
 
-	// create logger
-	logInstance := initializeLogger()
-
-	//Creating handlers
-	moviesHandler := handlers.MovieHanlder{
-		DB: db,
+	// Init
+	movieRepo, err := data.NewMovieRepository(db, logInstance)
+	if err != nil {
+		log.Fatalf("Fealied to initailize repository: %v", err)
 	}
 
-	http.HandleFunc("/api/movies/top", moviesHandler.GetTopMovies)
-	http.HandleFunc("/api/movies/random", moviesHandler.GetRandomMovies)
+	// Initialize handlers
+	movieHandler := handlers.NewMovieHandler(movieRepo, logInstance)
+
+	// Set up routes
+	http.HandleFunc("/api/movies/random", movieHandler.GetRandomMovies)
+	http.HandleFunc("/api/movies/top", movieHandler.GetTopMovies)
+	http.HandleFunc("/api/movies/search", movieHandler.SearchMovies)
+	http.HandleFunc("/api/movies/", movieHandler.GetMovie)
+	http.HandleFunc("/api/genres", movieHandler.GetGenres)
+	http.HandleFunc("/api/account/register", movieHandler.GetGenres)
+	http.HandleFunc("/api/account/authenticate", movieHandler.GetGenres)
 
 	// Handle static files
 	// http.Handle("/", http.FileServer(http.Dir("public")))

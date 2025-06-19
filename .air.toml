@@ -1,10 +1,10 @@
 # .air.toml
-root = "."
+root = "."  
 tmp_dir = "tmp"
 
 [build]
-cmd = "go build -o ./tmp/main ./main.go"
-bin = "./tmp/main"
+cmd = "go build -o ./tmp/main.exe ./main.go"
+bin = "./tmp/main.exe"
 include_ext = ["go"]  # Only watch .go files
 exclude_dir = ["tmp", "vendor", "node_modules"]
 delay = 1000  # ms
@@ -13,4 +13,4 @@ delay = 1000  # ms
 time = true
 
 [misc]
-clean_on_exit = true
+clean_on_exit = true 
