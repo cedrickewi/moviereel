@@ -58,15 +58,17 @@ func main() {
 
 	// Set up routes
 	http.HandleFunc("/api/movies/random", movieHandler.GetRandomMovies)
-	http.HandleFunc("/api/movies/top", movieHandler.GetTopMovies)
-	http.HandleFunc("/api/movies/search", movieHandler.SearchMovies)
+	http.HandleFunc("/api/movies/top/", movieHandler.GetTopMovies)
+	http.HandleFunc("/api/movies/search/", movieHandler.SearchMovies)
 	http.HandleFunc("/api/movies/", movieHandler.GetMovie)
 	http.HandleFunc("/api/genres", movieHandler.GetGenres)
 	http.HandleFunc("/api/account/register", movieHandler.GetGenres)
 	http.HandleFunc("/api/account/authenticate", movieHandler.GetGenres)
 
 	// Handle static files
-	// http.Handle("/", http.FileServer(http.Dir("public")))
+	http.Handle("/", http.FileServer(http.Dir("public")))
+	fmt.Println("Serving the files")
+
 	addr := ":8080"
 	fmt.Printf("Starting server on port: %s", addr)
 	if err := http.ListenAndServe(addr, nil); err != nil {
